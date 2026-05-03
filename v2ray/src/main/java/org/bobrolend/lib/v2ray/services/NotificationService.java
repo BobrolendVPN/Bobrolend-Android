@@ -11,6 +11,7 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
+import org.bobrolend.lib.v2ray.R;
 import org.bobrolend.lib.v2ray.interfaces.TrafficListener;
 import org.bobrolend.lib.v2ray.utils.Utilities;
 
@@ -52,7 +53,7 @@ public class NotificationService {
         }
 
         Notification notification = new NotificationCompat.Builder(service, channelId)
-                .setContentTitle("Libertad VPN")
+                .setContentTitle("Bobrolend VPN")
                 .setSmallIcon(android.R.drawable.sym_def_app_icon)
                 .setOngoing(true)
                 .build();
