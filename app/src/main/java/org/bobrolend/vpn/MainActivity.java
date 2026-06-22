@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private Button connection;
     private TextView connection_time;
     private ImageButton btnTheme;
+    private ImageButton btnRefresh;
     private BroadcastReceiver v2rayBroadCastReceiver;
     private String selectedConfig;
 
@@ -65,8 +66,11 @@ public class MainActivity extends AppCompatActivity {
         connection_time = findViewById(R.id.connection_duration);
         listView = findViewById(R.id.list_servers);
         btnTheme = findViewById(R.id.btn_theme);
+        btnRefresh = findViewById(R.id.btn_refresh);
 
-        V2rayController.init(this, R.drawable.ic_launcher, "Libertad VPN");
+        V2rayController.init(this, R.drawable.ic_launcher, "Bobrolend VPN");
+
+        btnRefresh.setOnClickListener(v -> { updateSubscription(); });
 
         TextView tunnel = findViewById(R.id.tunnel);
         TextView proxy = findViewById(R.id.proxy);
@@ -156,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         loadConfigsToUI();
-        startAutoUpdate();
+        updateSubscription();
         updateUI(V2rayController.getConnectionState());
 
         v2rayBroadCastReceiver = new BroadcastReceiver() {
@@ -296,16 +300,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Update
-    private void startAutoUpdate() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateSubscription();
-                handler.postDelayed(this, 3600 * 1000); // 1 час
-            }
-        }, 3600 * 1000);
-    }
-
     private void updateSubscription() {
         String token = getSharedPreferences("vpn", MODE_PRIVATE)
             .getString("token", "");
