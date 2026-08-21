@@ -88,7 +88,7 @@ public class V2rayCoreExecutor {
         try {
             stopCore(false);
             try {
-                Libv2ray.testConfig(v2rayConfig.fullJsonConfig);
+//                Libv2ray.testConfig(v2rayConfig.fullJsonConfig);
             } catch (Exception testException) {
                 coreState = V2rayConstants.CORE_STATES.STOPPED;
                 Log.d(V2rayCoreExecutor.class.getSimpleName(), "startCore => v2ray json config not valid.", testException);
