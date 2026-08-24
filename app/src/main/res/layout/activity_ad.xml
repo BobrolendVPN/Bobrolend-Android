@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:contentDescription="@string/banner_ad_description" />
+        android:contentDescription="Рекламный баннер" />
 
     <TextView
         android:id="@+id/countdown_label"
@@ -32,6 +32,6 @@
         android:layout_margin="16dp"
         android:background="@drawable/bg_countdown_circle"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
-        android:contentDescription="@string/close_banner"
+        android:contentDescription="Закрыть"
         android:visibility="gone" />
 </FrameLayout>
