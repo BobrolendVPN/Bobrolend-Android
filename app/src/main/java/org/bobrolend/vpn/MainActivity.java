@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private Button connection;
     private TextView connection_time;
     private ImageButton btnTheme;
+    private ImageButton btnRefresh;
     private BroadcastReceiver v2rayBroadCastReceiver;
     private String selectedConfig;
 
@@ -42,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Handler handler = new Handler(Looper.getMainLooper());
     private UpdateChecker updateChecker;
+
+    private V2rayConstants.CONNECTION_STATES currentState = V2rayConstants.CONNECTION_STATES.DISCONNECTED;
+    private boolean awaitingConnectAd = false;
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override
@@ -65,8 +69,11 @@ public class MainActivity extends AppCompatActivity {
         connection_time = findViewById(R.id.connection_duration);
         listView = findViewById(R.id.list_servers);
         btnTheme = findViewById(R.id.btn_theme);
+        btnRefresh = findViewById(R.id.btn_refresh);
 
-        V2rayController.init(this, R.drawable.ic_launcher, "Libertad VPN");
+        V2rayController.init(this, R.drawable.ic_launcher, "Bobrolend VPN");
+
+        btnRefresh.setOnClickListener(v -> { updateSubscription(); });
 
         TextView tunnel = findViewById(R.id.tunnel);
         TextView proxy = findViewById(R.id.proxy);
@@ -151,12 +158,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         connection.setOnClickListener(v -> {
+            boolean wasDisconnected = currentState != V2rayConstants.CONNECTION_STATES.CONNECTED;
+
             VpnManager.toggle(this);
             VibrationManager.vibrate(this, 80);
+
+            if (wasDisconnected) {
+                awaitingConnectAd = true;
+            }
         });
 
         loadConfigsToUI();
-        startAutoUpdate();
+        updateSubscription();
         updateUI(V2rayController.getConnectionState());
 
         v2rayBroadCastReceiver = new BroadcastReceiver() {
@@ -296,16 +309,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Update
-    private void startAutoUpdate() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateSubscription();
-                handler.postDelayed(this, 3600 * 1000); // 1 час
-            }
-        }, 3600 * 1000);
-    }
-
     private void updateSubscription() {
         String token = getSharedPreferences("vpn", MODE_PRIVATE)
             .getString("token", "");
@@ -345,11 +348,18 @@ public class MainActivity extends AppCompatActivity {
 
     // UI
     private void updateUI(V2rayConstants.CONNECTION_STATES state) {
+        currentState = state;
+
         switch (state) {
             case CONNECTED:
                 connection.setBackgroundTintList(
                     ColorStateList.valueOf(Color.parseColor("#22C55E"))
                 );
+
+                if (awaitingConnectAd) {
+                    awaitingConnectAd = false;
+                    showBannerAd();
+                }
                 break;
             case DISCONNECTED:
                 connection.setBackgroundTintList(
@@ -363,6 +373,10 @@ public class MainActivity extends AppCompatActivity {
                 );
                 break;
         }
+    }
+
+    private void showBannerAd() {
+        startActivity(new Intent(this, AdActivity.class));
     }
 
     @Override

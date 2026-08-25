@@ -25,6 +25,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".updateChecker.UpdateActivity" />
+        <activity android:name=".AdActivity" />
 
         <activity
             android:name=".appShortcuts.AppShortcut"
